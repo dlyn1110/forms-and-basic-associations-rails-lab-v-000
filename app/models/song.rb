@@ -33,4 +33,7 @@ class Song < ActiveRecord::Base
      self.notes << note unless note.content.empty?
    end
   end
+
+  self.notes.collect(&:content)
+
 end
