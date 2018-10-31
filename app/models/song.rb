@@ -3,12 +3,14 @@ class Song < ActiveRecord::Base
   belongs_to :genre
   has_many :notes
 
+
+  #Setter/Getter methods:
   def artist_name=(name)
     self.artist = Artist.find_or_create_by(name: name)
   end
 
   def artist_name
-    self.artist.name if artist
+    self.artist ? self.artist.name : nil
   end
 
   def genre_name=(name)
@@ -16,17 +18,23 @@ class Song < ActiveRecord::Base
   end
 
   def genre_name
-    self.genre.name
+    self.genre ? self.genre.name : nil
   end
 
-  def note_contents=(contents)
-    contents.each do |content|
-     note = Note.find_or_create_by(content: content)
-     self.notes << note unless note.content.empty?
-   end
+  def note_contents=(notes)
+    notes.each do |content|
+      unless content == ""
+        note = Note.create(content: content)
+        self.notes << note
+      end
+    end
   end
 
   def note_contents
-    self.notes.collect(&:content)
+    self.notes.map do |note|
+      note.content
+    end
   end
+
+
 end
